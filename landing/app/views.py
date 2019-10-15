@@ -41,14 +41,18 @@ def stats(request):
     # проверяйте GET параметр marker который может принимать значения test и original
     # Для вывода результат передайте в следующем формате:
     if counter_click['test'] == 0 :
-        test_conversion = 0.00001
+        test_conversion = 0
     else:
-        test_conversion = counter_click['test']/sum(counter_click.values())
+        test_conversion = counter_show['test']/counter_click['test']
     if counter_click['original'] ==0:
         orig_conversion = 0.00001
     else:
-        orig_conversion = counter_click['original']/sum(counter_click.values())
+        orig_conversion = counter_show['original']/counter_click['original']
     return render_to_response('stats.html', context={
         'test_conversion': test_conversion,
+        'test_show':counter_show['test'],
+        'test_click':counter_click['test'],
         'original_conversion':orig_conversion,
+        'orig_show':counter_show['original'],
+        'orig_click':counter_click['original'],
     })
