@@ -11,19 +11,28 @@ def index(request):
 # [{'Name': 'название', 'Street': 'улица', 'District': 'район'}]
 def bus_stations(request):
     current_page = int(request.GET.get('page',1))
-    next_page_url = '?page=' + str(current_page + 1)
+    #next_page_url = '?page=' + str(current_page + 1)
     page_len = 15
     with open(settings.BUS_STATION_CSV, mode='r', encoding='cp1251') as infile:
         csvdata = list(csv.DictReader(infile, delimiter=','))
 
     paginator = Paginator(csvdata, page_len)
     page = paginator.get_page(current_page)
+    if page.has_previous():
+        prev_page_url = '?page=' + str(page.previous_page_number())
+    else:
+        prev_page_url = '?page=' + str(current_page)
+    if page.has_next():
+        next_page_url = '?page=' + str(page.next_page_number())
+    else:
+        next_page_url = '?page=' + str(current_page)
+    
     print(page.has_next())
     print(page.has_previous())
     return render_to_response('index.html', context={
         'bus_stations': page,
         'current_page': current_page,
-        'prev_page_url': None,
+        'prev_page_url': prev_page_url,
         'next_page_url': next_page_url,
         })
 
